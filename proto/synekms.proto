@@ -1,0 +1,106 @@
+syntax = "proto3";
+
+package synekms;
+
+// The main KMS service definition.
+// It exposes methods for key management, encryption, and digital signatures.
+service KMSService {
+  // Creates a new KMS key within a specified project.
+  rpc CreateKey(CreateKeyRequest) returns (CreateKeyResponse);
+
+  // Encrypts plaintext data using a specified key.
+  rpc Encrypt(EncryptRequest) returns (EncryptResponse);
+
+  // Decrypts ciphertext data using a specified key.
+  rpc Decrypt(DecryptRequest) returns (DecryptResponse);
+
+  // Signs a piece of data using a specified key, producing a digital signature.
+  rpc Sign(SignRequest) returns (SignResponse);
+
+  // Verifies a digital signature against the original data and a specified key.
+  rpc Verify(VerifyRequest) returns (VerifyResponse);
+}
+
+// Request to create a new key.
+message CreateKeyRequest {
+  // A user-friendly name for the key.
+  string name = 1;
+  // A description for the key.
+  string description = 2;
+  // A machine-friendly name for the key (e.g., "billing-api-key").
+  string slug = 3;
+  // The encryption algorithm. e.g., "AES-256-GCM".
+  string encryption_algorithm = 4;
+}
+
+// Response containing details of the newly created key.
+message CreateKeyResponse {
+  string key_id = 1;
+  string name = 2;
+  string description = 3;
+  string project_id = 4;
+  string slug = 5;
+}
+
+// Request to encrypt data.
+message EncryptRequest {
+  // The ID of the key to use for encryption.
+  string key_id = 1;
+  // The plaintext data to encrypt, encoded as a Base64 string.
+  string plaintext_b64 = 2;
+}
+
+// Response containing the encrypted data.
+message EncryptResponse {
+  // The resulting ciphertext, encoded as a Base64 string.
+  string ciphertext_b64 = 1;
+}
+
+// Request to decrypt data.
+message DecryptRequest {
+  // The ID of the key that was used for encryption.
+  string key_id = 1;
+  // The ciphertext to decrypt, encoded as a Base64 string.
+  string ciphertext_b64 = 2;
+}
+
+// Response containing the decrypted data.
+message DecryptResponse {
+  // The original plaintext, encoded as a Base64 string.
+  string plaintext_b64 = 1;
+}
+
+// Request to sign data.
+message SignRequest {
+  // The ID of the key to use for signing.
+  string key_id = 1;
+  // The data to sign, encoded as a Base64 string.
+  string data_b64 = 2;
+  // Optional: The signing algorithm, e.g., "RSASSA_PSS_SHA_256".
+  // If omitted, Infisical uses the key's default algorithm.
+  optional string algorithm = 3;
+}
+
+// Response containing the digital signature.
+message SignResponse {
+  // The resulting signature, encoded as a Base64 string.
+  string signature_b64 = 1;
+}
+
+// Request to verify a signature.
+message VerifyRequest {
+  // The ID of the key to use for verification.
+  string key_id = 1;
+  // The original data that was signed, encoded as a Base64 string.
+  string data_b64 = 2;
+  // The signature to verify, encoded as a Base64 string.
+  string signature_b64 = 3;
+  // Optional: The algorithm used for signing. Must match the signing algorithm.
+  optional string algorithm = 4;
+}
+
+// Response indicating whether the signature is valid.
+message VerifyResponse {
+  // True if the signature is valid, false otherwise.
+  bool valid = 1;
+}
