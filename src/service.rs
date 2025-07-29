@@ -176,6 +176,7 @@ impl KmsService for SyneKmsService {
             let body = InfisicalCreateKeyRequest {
                 project_id: &self.project_id,
                 name: &req.name,
+                key_usage: &req.key_usage,
                 description: &req.description,
                 encryption_algorithm: &req.encryption_algorithm,
             };
@@ -287,7 +288,6 @@ impl KmsService for SyneKmsService {
             let body = InfisicalSignRequest {
                 data: &req.data_b64,
                 signing_algorithm: req.algorithm.as_deref(),
-                is_digest: None,
             };
             self.execute_request(url, &body).await?
         };
@@ -324,7 +324,6 @@ impl KmsService for SyneKmsService {
                 data: &req.data_b64,
                 signature: &req.signature_b64,
                 signing_algorithm: req.algorithm.as_deref(),
-                is_digest: None,
             };
             self.execute_request(url, &body).await?
         };

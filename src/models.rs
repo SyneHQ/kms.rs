@@ -11,6 +11,8 @@ pub struct InfisicalCreateKeyRequest<'a> {
     pub description: &'a str,
     #[serde(rename = "encryptionAlgorithm")]
     pub encryption_algorithm: &'a str,
+    #[serde(rename = "keyUsage", default = "encrypt-decrypt")]
+    pub key_usage: &'a str, 
 }
 
 // Create Key Response
@@ -34,6 +36,7 @@ pub struct InfisicalKeyDetails {
     pub created_at: String,
     #[serde(default = "default_empty_string")]
     pub updated_at: String,
+    #[serde(rename = "projectId")]
     pub project_id: String,
 }
 
@@ -72,16 +75,20 @@ pub struct InfisicalDecryptResponse {
 // Sign Request
 #[derive(Debug, Serialize)]
 pub struct InfisicalSignRequest<'a> {
+    #[serde(rename = "data")]
     pub data: &'a str,
+    #[serde(rename = "signingAlgorithm")]
     pub signing_algorithm: Option<&'a str>,
-    pub is_digest: Option<bool>,
 }
 
 // Sign Response
 #[derive(Debug, Deserialize)]
 pub struct InfisicalSignResponse {
+    #[serde(rename = "signature")]
     pub signature: String,
+    #[serde(rename = "keyId")]
     pub key_id: String,
+    #[serde(rename = "signingAlgorithm")]
     pub signing_algorithm: String,
 }
 
@@ -91,14 +98,16 @@ pub struct InfisicalVerifyRequest<'a> {
     pub data: &'a str,
     pub signature: &'a str,
     pub signing_algorithm: Option<&'a str>,
-    pub is_digest: Option<bool>,
 }
 
 // Verify Response
 #[derive(Debug, Deserialize)]
 pub struct InfisicalVerifyResponse {
+    #[serde(rename = "signatureValid")]
     pub signature_valid: bool,
+    #[serde(rename = "keyId")]
     pub key_id: String,
+    #[serde(rename = "signingAlgorithm")]
     pub signing_algorithm: String,
 }
 
